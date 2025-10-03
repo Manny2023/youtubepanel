@@ -1,6 +1,6 @@
 {
-  "name": "Control de Catálogos PWA",
-  "short_name": "Catálogos",
+  "name": "panel youtube",
+  "short_name": "panel",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#1a2980",
@@ -8,12 +8,12 @@
   "description": "App PWA para control y reordenamiento de catálogos de países con estados de video",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgej5_Up1qTBsvB56OZdSad2ICMDzjkvzY6qJGdPS3rEINii22kNAl0H_teONL_WOKR9no-c6jlCfrl3a3bvXVkiv6gNDU8yIo4zm6QIzgKDnubRIfhf_8QXvf3wssHSrHZ-C-klqxM-urmM23GuAtXIbT1v_Xmev11nLOxjUp0Yxlxd6XP3POLgjMNS5M/s512/panel-de-control.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "icon-512.png",
+      "src": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgej5_Up1qTBsvB56OZdSad2ICMDzjkvzY6qJGdPS3rEINii22kNAl0H_teONL_WOKR9no-c6jlCfrl3a3bvXVkiv6gNDU8yIo4zm6QIzgKDnubRIfhf_8QXvf3wssHSrHZ-C-klqxM-urmM23GuAtXIbT1v_Xmev11nLOxjUp0Yxlxd6XP3POLgjMNS5M/s512/panel-de-control.png",
       "sizes": "512x512",
       "type": "image/png"
     }
