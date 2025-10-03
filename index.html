@@ -8,25 +8,560 @@
 <link rel="manifest" href="manifest.json" />
 <meta name="theme-color" content="#1a2980" />
 <style>
-/* (Usar el mismo CSS que en el código responsive previo, no lo repito aquí para brevedad) */
+  /* Aquí va todo el CSS completo del panel para catálogos responsivo con banderas y estados */
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 10px;
+    background: linear-gradient(135deg, #e0f0ff, #cfe7ff);
+    color: #222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  h1 {
+    margin: 0 0 15px;
+    color: #1a2980;
+    text-shadow: 1px 1px 3px #89aaff;
+    text-align: center;
+    user-select: text;
+  }
+  #flagContainer {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+    max-width: 700px;
+  }
+  .flag-button {
+    cursor: pointer;
+    border: 3px solid transparent;
+    border-radius: 12px;
+    padding: 5px;
+    background: white;
+    box-shadow: 0 3px 10px rgba(26,41,128,0.15);
+    transition: border-color 0.3s ease;
+    width: 64px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .flag-button.selected {
+    border-color: #1a2980;
+    box-shadow: 0 0 12px #3957ff;
+  }
+  .flag-button img {
+    width: 48px;
+    height: 32px;
+    border-radius: 6px;
+  }
+  #catalogsContainer {
+    background: white;
+    box-shadow: 0 4px 15px rgba(26, 41, 128, 0.2);
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    padding: 20px 25px;
+    overflow-x: auto;
+  }
+  #noSelectionMessage {
+    font-style: italic;
+    color: #666;
+    text-align: center;
+    padding: 40px 10px;
+  }
+  .catalog-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 15px;
+  }
+  .catalog-item {
+    padding: 10px 15px;
+    background: #f0f8ff;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 6px rgba(26, 41, 128, 0.1);
+    display: grid;
+    grid-template-columns: 1fr auto auto auto 70px;
+    align-items: center;
+    gap: 10px;
+    cursor: grab;
+  }
+  .catalog-item.dragging {
+    opacity: 0.5;
+  }
+  .catalog-item label.catalog-name {
+    font-size: 16px;
+    color: #222;
+    user-select: text;
+  }
+  .checkbox-group {
+    display: flex;
+    gap: 12px;
+    user-select: none;
+  }
+  .checkbox-group label {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .checkbox-group input[type="checkbox"] {
+    cursor: pointer;
+  }
+  .delete-btn {
+    background-color: #e94b35;
+    border: none;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.25s ease;
+  }
+  .delete-btn:hover {
+    background-color: #c43525;
+  }
+  #showMoreBtn {
+    background-color: #3957ff;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 18px;
+    font-size: 14px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  #showMoreBtn:hover {
+    background-color: #2241cc;
+  }
+  #addCatalogForm {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  #addCatalogForm input[type="text"] {
+    flex-grow: 2;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #1a2980;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #addCatalogForm input[type="text"]:focus {
+    border-color: #5680ff;
+    box-shadow: 0 0 5px #5680ff;
+  }
+  #addCatalogForm select {
+    flex-grow: 1;
+    padding: 8px 12px;
+    font-size: 16px;
+    border: 2px solid #1a2980;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  #addCatalogForm select:focus {
+    border-color: #5680ff;
+    box-shadow: 0 0 5px #5680ff;
+  }
+  #addCatalogForm button {
+    background: #1a2980;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 10px;
+    padding: 10px 18px;
+    transition: background-color 0.3s ease;
+  }
+  #addCatalogForm button:hover {
+    background: #3957ff;
+  }
+  @media (max-width: 600px) {
+    #flagContainer {
+      gap: 10px;
+    }
+    .catalog-item {
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      cursor: grab;
+    }
+    .checkbox-group {
+      grid-column: span 3;
+      justify-content: space-around;
+    }
+    #catalogsContainer {
+      padding: 10px 10px 20px 10px;
+      max-width: 100vw;
+      overflow-x: auto;
+    }
+    #addCatalogForm {
+      flex-direction: column;
+    }
+    #addCatalogForm input[type="text"], #addCatalogForm select, #addCatalogForm button {
+      width: 100%;
+      margin: 4px 0;
+    }
+  }
 </style>
 </head>
 <body>
-<!-- Aquí va todo el contenido HTML y JS tal cual el código responsive y funcional anterior -->
-<h1>Control de Catálogos con Banderas, Estados y Reordenar (PWA)</h1>
 
-<!-- Contenedores y estructura del app idénticos al código previo -->
+<h1>Control de Catálogos PWA con Banderas, Estados y Reordenar</h1>
 
-<!-- ...resto del código idéntico al anterior, solo con pequeños ajustes para cargar desde aquí-->
+<div id="flagContainer" role="tablist" aria-label="Países para seleccionar">
+  <button class="flag-button" data-country="mexico" tabindex="0" aria-label="México" role="tab">
+    <img src="https://flagcdn.com/w40/mx.png" alt="Bandera de México" />
+  </button>
+  <button class="flag-button" data-country="argentina" tabindex="0" aria-label="Argentina" role="tab">
+    <img src="https://flagcdn.com/w40/ar.png" alt="Bandera de Argentina" />
+  </button>
+  <button class="flag-button" data-country="peru" tabindex="0" aria-label="Perú" role="tab">
+    <img src="https://flagcdn.com/w40/pe.png" alt="Bandera de Perú" />
+  </button>
+  <button class="flag-button" data-country="colombia" tabindex="0" aria-label="Colombia" role="tab">
+    <img src="https://flagcdn.com/w40/co.png" alt="Bandera de Colombia" />
+  </button>
+  <button class="flag-button" data-country="chile" tabindex="0" aria-label="Chile" role="tab">
+    <img src="https://flagcdn.com/w40/cl.png" alt="Bandera de Chile" />
+  </button>
+  <button class="flag-button" data-country="ecuador" tabindex="0" aria-label="Ecuador" role="tab">
+    <img src="https://flagcdn.com/w40/ec.png" alt="Bandera de Ecuador" />
+  </button>
+</div>
+
+<div id="catalogsContainer" role="tabpanel" aria-live="polite">
+  <div id="noSelectionMessage">Por favor, selecciona un país para ver y administrar sus catálogos.</div>
+</div>
 
 <script>
-  /* Copiar y pegar todo el JavaScript del ejemplo responsive anterior aquí, idéntico */
-  /* Registrar Service Worker */
+document.addEventListener('DOMContentLoaded', () => {
+  const initialCatalogs = {
+    mexico: [
+      {name:"catalogo andrea look", state:"No nada"},
+      {name:"cklass promocion de la semana", state:"No nada"},
+      {name:"cklass special home", state:"No nada"},
+      {name:"cklass special kwiss", state:"No nada"},
+      {name:"natura 16", state:"No nada"},
+      {name:"zermat", state:"No nada"},
+      {name:"avon 16", state:"No nada"},
+      {name:"catalogo extra México 1", state:"No nada"}
+    ],
+    argentina: [
+      {name:"gigot campaña 17", state:"No nada"},
+      {name:"amodil campaña16", state:"No nada"},
+      {name:"violeta campaña 15", state:"No nada"},
+      {name:"bagges 10", state:"No nada"},
+      {name:"millanel campaña 10", state:"No nada"},
+      {name:"avon 14", state:"No nada"},
+      {name:"catalogo extra Argentina 1", state:"No nada"},
+      {name:"catalogo extra Argentina 2", state:"No nada"}
+    ],
+    peru: [
+      {name:"lionisa 17", state:"No nada"},
+      {name:"oriflame 14", state:"No nada"},
+      {name:"pacifica 17", state:"No nada"},
+      {name:"lbel 17", state:"No nada"},
+      {name:"yambal", state:"No nada"},
+      {name:"catalogo extra Perú 1", state:"No nada"},
+      {name:"catalogo extra Perú 2", state:"No nada"},
+      {name:"catalogo extra Perú 3", state:"No nada"}
+    ],
+    colombia: [],
+    chile: [
+      {name:"catalogo Chile 1", state:"No nada"},
+      {name:"catalogo Chile 2", state:"No nada"}
+    ],
+    ecuador: [
+      {name:"catalogo Ecuador 1", state:"No nada"},
+      {name:"catalogo Ecuador 2", state:"No nada"}
+    ],
+  };
+
+  let catalogsByCountry = JSON.parse(JSON.stringify(initialCatalogs));
+  let currentCountry = null;
+  let showingAll = false;
+
+  const flagButtons = document.querySelectorAll('.flag-button');
+  const catalogsContainer = document.getElementById('catalogsContainer');
+  const noSelectionMessage = document.getElementById('noSelectionMessage');
+
+  flagButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      selectCountry(btn.dataset.country);
+    });
+  });
+
+  const stateDisplayMap = {
+    "No nada": "⛔ No nada",
+    "Video": "🎥 Video",
+    "Short + video": "🎬 Short + video"
+  };
+
+  const stateColors = {
+    "No nada": '#f44336',
+    "Video": '#4caf50',
+    "Short + video": '#2196f3'
+  };
+
+  function createStateTag(state) {
+    const text = stateDisplayMap[state] || state;
+    const color = stateColors[state] || '#999';
+    const span = document.createElement('span');
+    span.textContent = text;
+    span.style.background = color;
+    span.style.padding = '4px 10px';
+    span.style.borderRadius = '12px';
+    span.style.color = 'white';
+    span.style.fontWeight = '600';
+    span.style.fontSize = '14px';
+    span.style.userSelect = "none";
+    span.classList.add('state-tag');
+    return span;
+  }
+
+  function renderCatalogs() {
+    catalogsContainer.innerHTML = '';
+    if(!currentCountry) {
+      catalogsContainer.appendChild(noSelectionMessage);
+      return;
+    }
+
+    let countryCatalogs = catalogsByCountry[currentCountry] || [];
+    
+    if(countryCatalogs.length === 0){
+      const emptyMsg = document.createElement('div');
+      emptyMsg.style.fontStyle = 'italic';
+      emptyMsg.style.textAlign = 'center';
+      emptyMsg.style.color = '#666';
+      emptyMsg.style.padding = '40px 10px';
+      emptyMsg.textContent = 'No hay catálogos agregados aún para este país.';
+      catalogsContainer.appendChild(emptyMsg);
+    } else {
+      let toShow = showingAll ? countryCatalogs : countryCatalogs.slice(0, 2);
+
+      const ul = document.createElement('ul');
+      ul.className = 'catalog-list';
+      ul.id = 'catalogList';
+      ul.setAttribute('aria-label', 'Lista de catálogos');
+
+      toShow.forEach((catalog, idx) => {
+        const li = document.createElement('li');
+        li.className = 'catalog-item';
+        li.draggable = true;
+        li.dataset.index = idx;
+
+        const label = document.createElement('label');
+        label.textContent = catalog.name;
+        label.className = 'catalog-name';
+
+        const cbGroup = document.createElement('div');
+        cbGroup.className = 'checkbox-group';
+
+        const states = ["No nada", "Video", "Short + video"];
+        states.forEach(stateOption => {
+          const cbLabel = document.createElement('label');
+          const cbInput = document.createElement('input');
+          cbInput.type = 'checkbox';
+          cbInput.name = `checkbox-${idx}`;
+          cbInput.dataset.index = idx;
+          cbInput.dataset.state = stateOption;
+          cbInput.checked = (stateOption === catalog.state);
+
+          cbInput.addEventListener('change', () => {
+            if(cbInput.checked){
+              catalogsByCountry[currentCountry][cbInput.dataset.index].state = cbInput.dataset.state;
+              const siblings = cbGroup.querySelectorAll('input[type="checkbox"]');
+              siblings.forEach(sib => {
+                if(sib !== cbInput) sib.checked = false;
+              });
+              const existingTag = li.querySelector('span.state-tag');
+              if(existingTag) li.removeChild(existingTag);
+              li.appendChild(createStateTag(cbInput.dataset.state));
+            } else {
+              cbInput.checked = true;
+            }
+          });
+
+          cbLabel.appendChild(cbInput);
+          cbLabel.appendChild(document.createTextNode(stateOption));
+          cbGroup.appendChild(cbLabel);
+        });
+
+        li.appendChild(label);
+        li.appendChild(cbGroup);
+        li.appendChild(createStateTag(catalog.state));
+
+        const delBtn = document.createElement('button');
+        delBtn.className = 'delete-btn';
+        delBtn.textContent = 'Borrar';
+        delBtn.title = `Borrar catálogo "${catalog.name}"`;
+        delBtn.addEventListener('click', () => {
+          catalogsByCountry[currentCountry].splice(idx, 1);
+          renderCatalogs();
+        });
+        li.appendChild(delBtn);
+
+        // Drag and drop events for mobile + desktop
+        li.addEventListener('dragstart', dragStart);
+        li.addEventListener('dragover', dragOver);
+        li.addEventListener('drop', drop);
+        li.addEventListener('dragend', dragEnd);
+
+        ul.appendChild(li);
+      });
+
+      catalogsContainer.appendChild(ul);
+
+      if(countryCatalogs.length > 2){
+        const btnShowMore = document.createElement('button');
+        btnShowMore.id = 'showMoreBtn';
+        btnShowMore.textContent = showingAll ? 'Mostrar menos' : `Mostrar ${countryCatalogs.length - 2} más`;
+        btnShowMore.addEventListener('click', () => {
+          showingAll = !showingAll;
+          renderCatalogs();
+        });
+        catalogsContainer.appendChild(btnShowMore);
+      }
+    }
+
+    const form = document.createElement('form');
+    form.id = 'addCatalogForm';
+    form.style.marginTop = '20px';
+    form.style.display = 'flex';
+    form.style.flexWrap = 'wrap';
+    form.style.gap = '10px';
+    form.style.justifyContent = 'center';
+
+    const inputNewCat = document.createElement('input');
+    inputNewCat.type = 'text';
+    inputNewCat.placeholder = 'Nombre nuevo catálogo';
+    inputNewCat.required = true;
+    inputNewCat.style.flexGrow = '2';
+    inputNewCat.style.padding = '8px 12px';
+    inputNewCat.style.fontSize = '16px';
+    inputNewCat.style.border = '2px solid #1a2980';
+    inputNewCat.style.borderRadius = '10px';
+    inputNewCat.style.outline = 'none';
+
+    const selectState = document.createElement('select');
+    selectState.required = true;
+    ["No nada", "Video", "Short + video"].forEach(optionText => {
+      const opt = document.createElement('option');
+      opt.value = optionText;
+      opt.textContent = optionText;
+      selectState.appendChild(opt);
+    });
+    selectState.style.flexGrow = '1';
+    selectState.style.padding = '8px 12px';
+    selectState.style.fontSize = '16px';
+    selectState.style.border = '2px solid #1a2980';
+    selectState.style.borderRadius = '10px';
+    selectState.style.outline = 'none';
+
+    const btnAdd = document.createElement('button');
+    btnAdd.type = 'submit';
+    btnAdd.textContent = 'Agregar catálogo';
+    btnAdd.style.background = '#1a2980';
+    btnAdd.style.color = 'white';
+    btnAdd.style.border = 'none';
+    btnAdd.style.cursor = 'pointer';
+    btnAdd.style.fontWeight = '600';
+    btnAdd.style.borderRadius = '10px';
+    btnAdd.style.padding = '10px 18px';
+    btnAdd.style.transition = 'background-color 0.3s ease';
+
+    btnAdd.addEventListener('mouseover', () => btnAdd.style.background = '#3957ff');
+    btnAdd.addEventListener('mouseout', () => btnAdd.style.background = '#1a2980');
+
+    form.appendChild(inputNewCat);
+    form.appendChild(selectState);
+    form.appendChild(btnAdd);
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const newName = inputNewCat.value.trim();
+      const newState = selectState.value;
+      if(newName){
+        if (!catalogsByCountry[currentCountry]) {
+          catalogsByCountry[currentCountry] = [];
+        }
+        catalogsByCountry[currentCountry].push({name:newName, state:newState});
+        inputNewCat.value = '';
+        selectState.value = 'No nada';
+        showingAll = true; 
+        renderCatalogs();
+      }
+    });
+
+    catalogsContainer.appendChild(form);
+  }
+
+  let dragSrcEl = null;
+
+  function dragStart(e){
+    dragSrcEl = this;
+    e.dataTransfer.effectAllowed = 'move';
+    e.dataTransfer.setData('text/html', this.innerHTML);
+    this.classList.add('dragging');
+  }
+
+  function dragOver(e){
+    if(e.preventDefault) e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    return false;
+  }
+
+  function drop(e){
+    if(e.stopPropagation) e.stopPropagation();
+
+    if(dragSrcEl !== this){
+      const ul = this.parentNode;
+      const children = Array.from(ul.children);
+      const srcIndex = children.indexOf(dragSrcEl);
+      const destIndex = children.indexOf(this);
+
+      const temp = catalogsByCountry[currentCountry][srcIndex];
+      catalogsByCountry[currentCountry].splice(srcIndex,1);
+      catalogsByCountry[currentCountry].splice(destIndex,0,temp);
+
+      renderCatalogs();
+    }
+    return false;
+  }
+
+  function dragEnd(e){
+    this.classList.remove('dragging');
+  }
+
+  function selectCountry(country) {
+    if(currentCountry === country) return;
+    currentCountry = country;
+    showingAll = false;
+    flagButtons.forEach(btn => btn.classList.toggle('selected', btn.dataset.country === country));
+    renderCatalogs();
+  }
+});
+</script>
+
+<script>
+  // Registrar Service Worker para PWA
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js')
       .then(() => console.log('Service Worker registrado'))
-      .catch(err => console.error('Error registrando Service Worker:', err));
+      .catch(err => console.error('Error registro Service Worker:', err));
   }
 </script>
+
 </body>
 </html>
