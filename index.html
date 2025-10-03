@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Control de Catálogos PWA</title>
+
+<link rel="manifest" href="manifest.json" />
+<meta name="theme-color" content="#1a2980" />
+<style>
+/* (Usar el mismo CSS que en el código responsive previo, no lo repito aquí para brevedad) */
+</style>
+</head>
+<body>
+<!-- Aquí va todo el contenido HTML y JS tal cual el código responsive y funcional anterior -->
+<h1>Control de Catálogos con Banderas, Estados y Reordenar (PWA)</h1>
+
+<!-- Contenedores y estructura del app idénticos al código previo -->
+
+<!-- ...resto del código idéntico al anterior, solo con pequeños ajustes para cargar desde aquí-->
+
+<script>
+  /* Copiar y pegar todo el JavaScript del ejemplo responsive anterior aquí, idéntico */
+  /* Registrar Service Worker */
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js')
+      .then(() => console.log('Service Worker registrado'))
+      .catch(err => console.error('Error registrando Service Worker:', err));
+  }
+</script>
+</body>
+</html>
